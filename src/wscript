@@ -1,0 +1,21 @@
+def build(bld):
+  bld(features     ='cxx cshlib',
+      source       = 'redsvd.cpp',
+      name         = 'redsvd',
+      target       = 'redsvd',
+      includes     = '.')
+  bld(features     ='cxx cstaticlib',
+      source       = 'redsvd.cpp',
+      name         = 'redsvd',
+      target       = 'redsvd',
+      includes     = '.')
+  bld(features     ='cxx cprogram',
+      source       = 'redsvdMain.cpp',
+      target       = 'redsvd',
+      includes     = '.',
+      uselib_local = 'redsvd')
+  bld(features     = 'cxx cprogram gtest',
+      source       = 'redsvdTest.cpp',
+      target       = 'redsvd_test',
+      uselib_local = 'redsvd')
+  bld.install_files('${PREFIX}/include/redsvd', bld.path.ant_glob('*.hpp'))
