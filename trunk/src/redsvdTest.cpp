@@ -8,10 +8,11 @@ const float EPS = 0.001f;
 
 TEST(redsvd, trivial){
   MatrixXf A;
-  MatrixXf U;
-  VectorXf S;
-  MatrixXf V;
-  REDSVD::runSVD(A, 0, U, S, V);
+  REDSVD::RedSVD redsvd;
+  redsvd.runSVD(A, 0);
+  MatrixXf U = redsvd.matrixU();
+  VectorXf S = redsvd.singularValues();
+  MatrixXf V = redsvd.matrixV();
   ASSERT_EQ(0, U.rows());
   ASSERT_EQ(0, U.cols());
   ASSERT_EQ(0, V.rows());
@@ -28,12 +29,14 @@ TEST(redsvd, artificial){
   A << 1,  2,  3,  4,  5,
        6,  7,  8,  9, 10, 
       11, 12, 13, 14, 15;
-  MatrixXf U;
-  VectorXf S;
-  MatrixXf V;
   
   int r = 2;
-  REDSVD::runSVD(A, r, U, S, V);
+  REDSVD::RedSVD redsvd;
+  redsvd.runSVD(A, r);
+  MatrixXf U = redsvd.matrixU();
+  VectorXf S = redsvd.singularValues();
+  MatrixXf V = redsvd.matrixV();
+
   ASSERT_EQ(rowN, U.rows());
   ASSERT_EQ(r,    U.cols());
   ASSERT_EQ(colN, V.rows());
@@ -64,12 +67,13 @@ TEST(redsvd, random){
   int colN = 70;
   MatrixXf A = MatrixXf::Random(rowN, colN);
 
-  MatrixXf U;
-  VectorXf S;
-  MatrixXf V;
-  
   int r = 20;
-  REDSVD::runSVD(A, r, U, S, V);
+  REDSVD::RedSVD redsvd;
+  redsvd.runSVD(A, r);
+  MatrixXf U = redsvd.matrixU();
+  VectorXf S = redsvd.singularValues();
+  MatrixXf V = redsvd.matrixV();
+
   ASSERT_EQ(rowN, U.rows());
   ASSERT_EQ(r,    U.cols());
   ASSERT_EQ(colN, V.rows());

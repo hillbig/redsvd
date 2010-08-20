@@ -10,7 +10,7 @@ def build(bld):
       target       = 'redsvd',
       includes     = '.')
   bld(features     ='cxx cprogram',
-      source       = 'redsvdMain.cpp',
+      source       = 'redsvdMain.cpp redsvdFile.cpp',
       target       = 'redsvd',
       includes     = '.',
       uselib_local = 'redsvd')

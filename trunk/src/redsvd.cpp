@@ -8,7 +8,7 @@ namespace REDSVD {
 
 const float SVD_EPS = 0.0001f;
 
-void sampleTwoGaussian(float& f1, float& f2){
+void RedSVD::sampleTwoGaussian(float& f1, float& f2){
   float v1 = (float)(rand()+1) / ((float)RAND_MAX+1);
   float v2 = (float)(rand()+1) / ((float)RAND_MAX+1);
   float len = sqrt(-2.f * log(v1));
@@ -16,7 +16,7 @@ void sampleTwoGaussian(float& f1, float& f2){
   f2 = len * sin(2.f * M_PI * v2);
 }
 
-void sampleGaussianMat(MatrixXf& x){
+void RedSVD::sampleGaussianMat(MatrixXf& x){
   for (int i = 0; i < x.rows(); ++i){
     int j = 0;
     for ( ; j+1 < x.cols(); j += 2){
@@ -33,7 +33,7 @@ void sampleGaussianMat(MatrixXf& x){
   }
 } 
 
-void processGramSchmidt(MatrixXf& mat){
+void RedSVD::processGramSchmidt(MatrixXf& mat){
   for (int i = 0; i < mat.cols(); ++i){
     for (int j = 0; j < i; ++j){
       float r = mat.col(i).dot(mat.col(j));
