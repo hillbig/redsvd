@@ -9,7 +9,7 @@ const float EPS = 0.001f;
 TEST(redsvd, trivial){
   MatrixXf A;
   REDSVD::RedSVD redsvd;
-  redsvd.runSVD(A, 0);
+  redsvd.run(A, 0);
   MatrixXf U = redsvd.matrixU();
   VectorXf S = redsvd.singularValues();
   MatrixXf V = redsvd.matrixV();
@@ -32,7 +32,7 @@ TEST(redsvd, artificial){
   
   int r = 2;
   REDSVD::RedSVD redsvd;
-  redsvd.runSVD(A, r);
+  redsvd.run(A, r);
   MatrixXf U = redsvd.matrixU();
   VectorXf S = redsvd.singularValues();
   MatrixXf V = redsvd.matrixV();
@@ -69,7 +69,7 @@ TEST(redsvd, random){
 
   int r = 20;
   REDSVD::RedSVD redsvd;
-  redsvd.runSVD(A, r);
+  redsvd.run(A, r);
   MatrixXf U = redsvd.matrixU();
   VectorXf S = redsvd.singularValues();
   MatrixXf V = redsvd.matrixV();

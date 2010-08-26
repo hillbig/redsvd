@@ -4,15 +4,24 @@
 #include <iostream>
 #include <eigen3/Eigen/Sparse>
 #include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Eigenvalues>
 
 namespace REDSVD {
+
+void sampleGaussianMat(Eigen::MatrixXf& x);
+void processGramSchmidt(Eigen::MatrixXf& mat);
 
 class RedSVD {
 public:
   RedSVD(){}
 
   template <class Mat>
-  void runSVD(Mat& A, const int rank){
+  RedSVD(Mat& A, const int rank){
+    run(A, rank);
+  }
+
+  template <class Mat>
+  void run(Mat& A, const int rank){
     if (A.cols() == 0 || A.rows() == 0) return;
     int r = (rank < A.cols()) ? rank : A.cols();
     r = (r < A.rows()) ? r : A.rows();
@@ -65,23 +74,69 @@ public:
   }
 
 private:
-  void sampleTwoGaussian(float& f1, float& f2);
-  void sampleGaussianMat(Eigen::MatrixXf& x);
-  void processGramSchmidt(Eigen::MatrixXf& mat);
-  
   Eigen::MatrixXf matU_;
   Eigen::VectorXf matS_;
   Eigen::MatrixXf matV_;
 };
 
+class RedSymEigen {
+public:
+  RedSymEigen(){}
 
+  template <class Mat>
+  RedSymEigen(Mat& A, const int rank){
+    run(A, rank);
+  }  
+
+  template <class Mat>
+  void run(Mat& A, const int rank){
+    if (A.cols() == 0 || A.rows() == 0) return;
+    int r = (rank < A.cols()) ? rank : A.cols();
+    r = (r < A.rows()) ? r : A.rows();
+    
+    // Gaussian Random Matrix
+    Eigen::MatrixXf O(A.rows(), r);
+    sampleGaussianMat(O);
+    
+    // Compute Sample Matrix of A
+    Eigen::MatrixXf Y = A.transpose() * O;
+    
+    // Orthonormalize Y
+    processGramSchmidt(Y);
+
+    Eigen::MatrixXf B = Y.transpose() * A * Y;
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXf> eigenOfB(B);
+    
+    eigenValues_ = eigenOfB.eigenvalues();
+    eigenVectors_ = Y * eigenOfB.eigenvectors();
+  }
+  
+  const Eigen::MatrixXf& eigenVectors() const {
+    return eigenVectors_;
+  }
+
+  const Eigen::VectorXf& eigenValues() const {
+    return eigenValues_;
+  }
+
+private:
+  Eigen::VectorXf eigenValues_;
+  Eigen::MatrixXf eigenVectors_;
+};
 
 class RedPCA {
 public:
+  RedPCA(){}
+
+  template <class Mat>
+  RedPCA(const Mat& A, const int rank) {
+    run(A, rank);
+  }
+
   template <class Mat> 
-  void runPCA(const Mat& A, const int rank) {
+  void run(const Mat& A, const int rank) {
     RedSVD redsvd;
-    redsvd.runSVD(A, rank);
+    redsvd.run(A, rank);
     const Eigen::VectorXf& S = redsvd.singularValues();
     principalComponents_ = redsvd.matrixV();
     scores_              = redsvd.matrixU() * S.asDiagonal();
