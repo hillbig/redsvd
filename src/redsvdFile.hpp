@@ -7,20 +7,25 @@
 
 namespace REDSVD{
 
+typedef Eigen::SparseMatrix<float, Eigen::RowMajor> SMatrixXf;
+
 double getSec();
 
-void readMatrix(const char* fn, const std::string& formatType,  Eigen::SparseMatrix<float, Eigen::RowMajor>& A);
-void readMatrix(const char* fn, const std::string& formatType, Eigen::MatrixXf& A);
+void readMatrix(const std::string& fn, SMatrixXf& A);
+void readMatrix(const std::string& fn, Eigen::MatrixXf& A);
 
-template<class Mat>
-void SVDMatrix(const std::string& inputFileName,
-	       const std::string& formatType,
-	       int rank,
-	       RedSVD& redsvd){
+void writeMatrix(const std::string& fn, const RedSVD& A);
+void writeMatrix(const std::string& fn, const RedPCA& A);
+void writeMatrix(const std::string& fn, const RedSymEigen& A);
+
+template<class Mat, class RetMat>
+void fileProcess(const std::string& inputFileName,
+		 const std::string& outputFileName,
+		 int rank){
   double startSec = getSec();
   std::cout << "read matrix from " << inputFileName << " ... " << std::flush;
   Mat A;
-  readMatrix(inputFileName.c_str(), formatType, A);
+  readMatrix(inputFileName.c_str(), A);
   double endSec = getSec();
   std::cout << endSec - startSec << " sec." <<std:: endl;
   std::cout << "rows:\t" << A.rows() << std::endl
@@ -29,41 +34,14 @@ void SVDMatrix(const std::string& inputFileName,
 
   std::cout << "compute SVD... " << std::flush;
   startSec = getSec();
-  redsvd.runSVD(A, rank);
+  RetMat retMat(A, rank);
   std::cout << endSec - startSec << " sec." << std::endl;
-}
-
-template<class Mat>
-void PCAMatrix(const std::string& inputFileName,
-	       const std::string& formatType,
-	       int rank,
-	       RedPCA& redpca){
-  double startSec = getSec();
-  std::cout << "read matrix from " << inputFileName << " ... " << std::flush;
-  Mat A;
-  readMatrix(inputFileName.c_str(), formatType, A);
-  double endSec = getSec();
-  std::cout << endSec - startSec << " sec." <<std:: endl;
-  std::cout << "rows:\t" << A.rows() << std::endl
-	    << "cols:\t" << A.cols() << std::endl
-	    << "rank:\t" << rank  << std::endl;
-
-  std::cout << "compute PCA... " << std::flush;
+  
   startSec = getSec();
-  redpca.runPCA(A, rank);
-  std::cout << endSec - startSec << " sec." << std::endl;
+  writeMatrix(outputFileName, retMat);
+  std::cout << getSec() - startSec << " sec." << std::endl
+	    << "finished." << std::endl;
 }
-
-
-void SVDfromFile(const std::string& inputFileName, 
-		 const std::string& outputFileName,
-		 const std::string& formatType, 
-		int rank);
-
-int PCAfromFile(const std::string& inputFileName, 
-		const std::string& outputFileName,
-		const std::string& formatType, 
-		int rank);
 
 }
 

@@ -9,7 +9,8 @@ using namespace std;
 using namespace Eigen;
 
 namespace {
-void writeMatrix(const string& fn, const MatrixXf& M){
+
+void writeMatrix_(const string& fn, const MatrixXf& M){
   cout << "write " << fn << endl;
   FILE* outfp = fopen(fn.c_str(), "wb");
   if (outfp == NULL){
@@ -26,7 +27,7 @@ void writeMatrix(const string& fn, const MatrixXf& M){
   fclose(outfp);
 }
 
-void writeVector(const string& fn, const VectorXf& V){
+void writeVector_(const string& fn, const VectorXf& V){
   cout << "write " << fn << endl;
   FILE* outfp = fopen(fn.c_str(), "wb");
   if (outfp == NULL){
@@ -67,15 +68,8 @@ void convertFV2Mat(const vector<fv_t>& fvs, SparseMatrix<float, RowMajor>& A){
 
 void readLine(const string& line,  
 	      const size_t lineN, 
-	      const string& formatType, 
 	      fv_t& fv){
   istringstream is(line);
-  if (formatType == "libsvm"){
-    int label = -1;
-    if (!(is >> label)){
-      throw string("cannot read ") + line;
-    }
-  }
 
   int id;
   char sep;
@@ -90,16 +84,16 @@ void readLine(const string& line,
 }
 
 namespace REDSVD{
+
 double getSec(){
   timeval tv;
   gettimeofday(&tv, NULL);
   return tv.tv_sec + (double)tv.tv_usec*1e-6;
 }
 
-void readMatrix(const char* fn, const string& formatType, 
-		SparseMatrix<float, RowMajor>& A){
+void readMatrix(const std::string& fn, SparseMatrix<float, RowMajor>& A){
   vector<fv_t> fvs;
-  ifstream ifs(fn);
+  ifstream ifs(fn.c_str());
   if (!ifs){
     throw string("failed to open") + fn;
   }
@@ -107,15 +101,15 @@ void readMatrix(const char* fn, const string& formatType,
   size_t lineN = 0;
   for (string line; getline(ifs, line); ){
     fv_t fv;
-    readLine(line, lineN++, formatType, fv);
+    readLine(line, lineN++, fv);
     if (fv.size() == 0) continue;
     fvs.push_back(fv);
   }
   convertFV2Mat(fvs, A);
 }
 
-void readMatrix(const char* fn, const string& formatType, MatrixXf& A){
-  ifstream ifs(fn);
+void readMatrix(const std::string& fn, MatrixXf& A){
+  ifstream ifs(fn.c_str());
   if (!ifs){
     throw string("failed to open " ) + fn;
   }
@@ -148,49 +142,20 @@ void readMatrix(const char* fn, const string& formatType, MatrixXf& A){
   }
 }
 
-
-void SVDfromFile(const string& inputFileName, 
-		 const string& outputFileName, 
-		 const string& formatType, 
-		 int rank){
-  RedSVD redsvd;
-  if (formatType == "dense"){
-    SVDMatrix<MatrixXf>(inputFileName, formatType, rank, redsvd);
-  } else if (formatType == "sparse" || formatType == "libsvm"){
-    SVDMatrix<SparseMatrix<float, RowMajor> >(inputFileName, formatType, rank, redsvd);
-  } else {
-    throw string("unknown formatType:") + formatType; 
-  }
-  
-  double startSec = getSec();
-  cout << "write matrix to " << outputFileName << flush << endl;
-  writeMatrix(outputFileName + ".U", redsvd.matrixU());
-  writeVector(outputFileName + ".S", redsvd.singularValues());
-  writeMatrix(outputFileName + ".V", redsvd.matrixV());
-  cout << getSec() - startSec << " sec." << endl
-       << "finished." << endl;
+void writeMatrix(const string& fn, const REDSVD::RedSVD& A){
+  writeMatrix_(fn + ".U", A.matrixU());
+  writeVector_(fn + ".S", A.singularValues());
+  writeMatrix_(fn + ".V", A.matrixV());
 }
 
-int PCAfromFile(const string& inputFileName, 
-		const string& outputFileName, 
-		const string& formatType, 
-		int rank){
-  RedPCA redpca;
-  if (formatType == "dense"){
-    PCAMatrix<MatrixXf>(inputFileName, formatType, rank, redpca);
-  } else if (formatType == "sparse" || formatType == "libsvm"){
-    PCAMatrix<SparseMatrix<float, RowMajor> >(inputFileName, formatType, rank, redpca);
-  } else {
-    throw string("unknown formatType:") + formatType; 
-  }
-  
-  double startSec = getSec();
-  writeMatrix(outputFileName + ".PC",    redpca.principalComponents());
-  writeMatrix(outputFileName + ".score", redpca.scores());
-  cout << getSec() - startSec << " sec." << endl
-       << "finished." << endl;
-  return 0;
+void writeMatrix(const string& fn, const REDSVD::RedPCA& A){
+  writeMatrix_(fn + ".pc",    A.principalComponents());
+  writeVector_(fn + ".score", A.scores());
 }
 
+void writeMatrix(const string& fn, const REDSVD::RedSymEigen& A){
+  writeMatrix_(fn + ".evec", A.eigenVectors());
+  writeVector_(fn + ".eval", A.eigenValues());
+}
 
 }
