@@ -52,8 +52,17 @@ int main(int argc, char* argv[]){
   string format = p.get<string>("format");
   int    rank   = p.get<int>   ("rank");
   string method = p.get<string>("method");
-  bool isInputSparse = (format == "dense") ? false : true;
+  bool isInputSparse = false;
+  if (format == "dense"){
+    isInputSparse = false;
+  } else if (format == "sparse"){
+    isInputSparse = true;
+  } else {
+    cerr << "unknwon format:" << format << endl;
+    return -1;
+  }
 
+  cout << "compute " << method << endl;
   try {
     if (method == "SVD"){
       if (isInputSparse){
