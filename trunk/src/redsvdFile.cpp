@@ -8,6 +8,8 @@
 using namespace std;
 using namespace Eigen;
 
+namespace REDSVD{
+
 namespace {
 
 void writeMatrix_(const string& fn, const MatrixXf& M){
@@ -44,7 +46,7 @@ void writeVector_(const string& fn, const VectorXf& V){
 
 typedef vector<pair<int, float> > fv_t;
 
-void convertFV2Mat(const vector<fv_t>& fvs, SparseMatrix<float, RowMajor>& A){
+void convertFV2Mat(const vector<fv_t>& fvs, REDSVD::SMatrixXf& A){
   int maxID = 0;
   size_t nonZeroNum = 0;
   for (size_t i = 0; i < fvs.size(); ++i){
@@ -83,7 +85,6 @@ void readLine(const string& line,
 
 }
 
-namespace REDSVD{
 
 double getSec(){
   timeval tv;
@@ -91,7 +92,7 @@ double getSec(){
   return tv.tv_sec + (double)tv.tv_usec*1e-6;
 }
 
-void readMatrix(const std::string& fn, SparseMatrix<float, RowMajor>& A){
+void readMatrix(const std::string& fn, SMatrixXf& A){
   vector<fv_t> fvs;
   ifstream ifs(fn.c_str());
   if (!ifs){

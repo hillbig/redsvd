@@ -1,7 +1,8 @@
-VERSION = '0.0.2'
+VERSION = '0.0.3'
 APPNAME = 'redsvd'
 
 srcdir = '.'
+blddir = 'build'
 
 def set_options(ctx):
   ctx.tool_options('compiler_cxx')
@@ -12,6 +13,13 @@ def configure(ctx):
   ctx.check_tool('unittestt')	
   ctx.check_cfg(package = 'eigen3')
   ctx.env.CXXFLAGS += ['-O2', '-Wall', '-g']
+
+import Scripting
+Scripting.dist_exts += ['.sh']
+
+def dist_hook():
+    import os
+    os.remove('googlecode_upload.py')
 
 def build(bld):
   bld.recurse('src')

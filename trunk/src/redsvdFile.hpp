@@ -32,9 +32,10 @@ void fileProcess(const std::string& inputFileName,
 	    << "cols:\t" << A.cols() << std::endl
 	    << "rank:\t" << rank  << std::endl;
 
-  std::cout << "compute SVD... " << std::flush;
+  std::cout << "compute ... " << std::flush;
   startSec = getSec();
   RetMat retMat(A, rank);
+  endSec   = getSec();
   std::cout << endSec - startSec << " sec." << std::endl;
   
   startSec = getSec();
