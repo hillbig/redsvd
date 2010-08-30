@@ -1,0 +1,177 @@
+== Inside of redsvd ==
+
+The code redsvd.hpp is the core part of redsvd and self explanatory.
+
+Let A \in R ^{n x m}^ be a matrix to be analyzed; n is the number of row and m is the number of columns, and r be the ranks of a truncated SVD (if you choose r = min(n, m), then this is the original SVD). First a random Gaussian matrix O \in R^{m x r}^  is sampled  and computes a sample matrix Y = A^t^ O. We then apply a Gram-Schmidt process to Y so that each column of Y is ortho-normalized. Finally we compute B = AY \in R^{n \times r}^.  Although the size of B is much smaller than that of A, the range of B equals to that of A^t^ with high probability. Therefore a matrix B has the compressed information of A with regard to the columns without loss of information. 
+
+Next, we take another random Gaussian matrix P \in R^{r x r}^, and compute Z = BP, and  Z is also ortho-normalized. Then compute C = Z^t^ B \in R^{r x r}^. C has the compressed information of B with regard to the rows. Finally we compute SVD of C using the traditional method and obtain C = USV^t^ where U  and V are orthonormal matrices, and S is the diagonal matrix. 
+
+The matrix A is now decomposed as A = ZUSV^t^ Y^t^. ZU is the left singular vectors, YV is the right singular vector, and S is the diagonal matrix with singular values. 
+
+
+== How to Use ==
+
+Install eigen3
+[http://eigen.tuxfamily.org/index.php?title=3.0-beta1 eigen3.0-beta1]
+
+Download the latest tarball from [http://code.google.com/p/redsvd/downloads/list Downloads].
+{{{
+> tar xvjf redsvd-x.x.x.tar.bz2
+> cd redsvd-x.x.x
+> ./waf configure
+> ./waf
+sudo ./waf install
+}}}
+
+You can see the usage by calling redsvd without options.
+{{{
+>redsvd
+usage: redsvd --input=string --output=string [options] ...
+
+redsvd supports the following format types (one line for each row)
+
+[format=dense] (<value>+\n)+
+[format=sparse] ((colum_id:value)+\n)+
+Example:
+>redsvd -i imat -o omat -r 10 -f dense
+compuate SVD for a dense matrix in imat and output omat.U omat.V, and omat.S
+with the 10 largest eigen values/vectors
+>redsvd -i imat -o omat -r 3 -f sparse -m PCA
+compuate PCA for a sparse matrix in imat and output omat.PC omat.SCORE
+with the 3 largest principal components
+
+options:
+  -i, --input     input file (string)
+  -o, --output    output file's prefix (string)
+  -r, --rank      rank       (int [=10])
+  -f, --format    format type (dense|sparse) See example.  (string [=dense])
+  -m, --method    method (SVD|PCA|SymEigen) (string [=SVD])
+}}}
+
+{{{
+> cat file1
+ 1.0  2.0  3.0  4.0  5.0
+-2.0 -1.0  0.0  1.0  2.0
+ 1.0 -2.0  3.0 -5.0  7.0
+> redsvd -i file1 -o file1 -r 2 -f 2
+read dense matrix from file1 ... 0.000102997 sec.
+SVD for a dense matrix
+rows:   3
+cols:   5
+rank:   2
+compute SVD... -4.69685e-05 sec.
+write matrix to file1(.U|.S|.V) ... 0.018553 sec.
+finished.
+> cat file1.U
+-0.372291 -0.926217
+-0.005434 -0.061765
+-0.928100 +0.371897
+> cat file1.V
+-0.411950 -0.186912
+-0.031819 -0.450366
+-0.441672 -0.257618
++0.432198 -0.806197
+-0.668891 -0.214273
+> cat file1.S
++9.176333
++6.647099
+}}}
+
+You can also use a sparse matrix representation.
+{{{
+> 
+> cat news20.binary
+1:0.016563 3:0.016563 6:0.016563  ...
+...
+
+> redsvd -i news20.binary -o news20 -f 1 -r 10
+read sparse matrix from news20.binary ... 4.84901 sec.
+   rows:        19954
+   cols:        1355192
+nonzero:        9097916
+   rank:        10
+compute SVD... 2.52615 sec.
+write matrix to news20(.U|.S|.V) ... 5.6056 sec.
+finished.
+> cat news20.S
++17.973207
++2.556800
++2.460566
++2.135978
++2.022737
++1.931362
++1.927033
++1.853175
++1.770231
++1.764138
+}}}
+
+== Experimental Result ==
+
+See the detailed result [http://redsvd.googlecode.com/files/redsvd_result.pdf redsvd_result.pdf]
+
+You can reproduce these result by
+{{{
+> performanceTest.sh
+> accuracyTest.sh
+}}}
+
+
+* For dense matrices
+
+|| n   || m      || rank || time (msec) ||
+|| 500 || 100    ||   10 || 0.76        ||
+|| 500 || 1000   ||   10 || 3.24        ||
+|| 500 || 10000  ||   10 || 32.3        ||
+|| 500 || 100000 ||   10 || 306.3       ||
+
+|| n   || m      || rank || time (msec) ||
+|| 500 || 100    || 100  || 12.3        ||
+|| 500 || 1000   || 1000 || 987.5       ||
+|| 500 || 10000  || 1000 || 3850.0      ||
+|| 500 || 100000 || 1000 || 32824.3     ||
+
+|| n     || m     || rank || time (msec) ||
+|| 100   || 100   ||   10 || 0.20        ||
+|| 1000  || 1000  ||   10 || 6.34        ||
+|| 10000 || 10000 ||   10 || 578         ||
+
+|| n     || m     || rank || time (msec) ||
+|| 100   || 100   || 500 || 8.67        ||
+|| 1000  || 1000  || 500 || 8654        ||
+|| 10000 || 10000 || 500 || 45001       ||
+
+* For sparse matrices
+
+|| n      || m      || rank || nonzero ratio (%) ||  time (msec) ||
+|| 100    || 100    || 10   || 0.1               || 0.31         ||
+|| 1000   || 1000   || 10   || 0.1               || 1.17         ||
+|| 10000  || 10000  || 10   || 0.1               || 22.5         ||
+|| 100000 || 100000 || 10   || 0.1               || 1679.9       ||
+
+|| n      || m      || rank || nonzero ratio (%) ||  time (msec) ||
+|| 100    || 100    || 10   || 1.0               || 0.16         ||
+|| 1000   || 1000   || 10   || 1.0               || 2.0          ||
+|| 10000  || 10000  || 10   || 1.0               || 124.1        ||
+|| 100000 || 100000 || 10   || 1.0               || 12603.4      ||
+
+* Latent Semantic Analyasis (SVD for doc-term matrix) of English Wikipedia
+
+|| # doc || # word || # total words || time (msec) ||
+|| 3560	 || 27106  || 172823  || 27          ||
+|| 46857 || 147144 || 2418406 || 390         ||
+|| 118110 || 261495 || 6142438 || 1073 ||
+|| 233717 || 402239 || 12026852 || 1993 ||
+
+
+
+
+== Thanks ==
+
+  * redsvd uses [http://eigen.tuxfamily.org/index.php?title=3.0-beta1 Eigen 3.0-beta1]
+  * redsvd uses the algorithm based on the randomized algorithm in the following paper. 
+  # "Finding structure with randomness: Stochastic algorithms for constructing approximate matrix decompositions", N. Halko, P.G. Martinsson, J. Tropp, arXiv 0909.4061
+
+Warning: The algorithm used in redsvd is not identical to the one in the above paper. Do not report that the results of redsvd are those of the algorithm in the above paper.
+
+  * redsvd is developed in 20% project of [http://preferred.jp/index.html Preferred Infrastructure(Japanese)]
