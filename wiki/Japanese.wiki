@@ -12,11 +12,29 @@ redsvdはフリーソフトウェアです修正BSDライセンスに基づい�
 
 redsvdの主要なコードとその説明は[http://code.google.com/p/redsvd/source/browse/trunk/src/redsvd.hpp redsvd.hpp]に書かれています．ここではその解説を行ないます．
 
-n行m列の行列Aに対し上位r個の特異値に関する特異値分解をすることを考えてみます．初めに各成分が平均0、分散1のGaussianからサンプルされた行r列のGaussian行列 Oをサンプリングします．次に、Y = A^t^ Oを求めます．この時YとAの値域は一致します．そしてYの各列をGram-Schmidt法で正規直交化します．この時AYY^t^ = Aが成り立ちます．最後にn行r列のB = AYを求めます．このBはAを列方向に情報を圧縮していると考えられます．次に同様の方法で行方向に情報を圧縮します。まず、各成分が平均0，分散1のGaussianからサンプルされたr行r列の行列Pをサンプリングし、次に Z= BPを求めます．そしてZの各列を正規直交化します．最後に C = Z^t^ Bを求めます．Cはr行r列の行列であり、Bを各列方向に圧縮しています．B = Z Z^t^ Bが成り立ちます．最後にCに対してSVDを従来のSVDを求める方法で求め、C=USV^t^を得ます．Cは非常に小さい行列になっているので、この部分は高速に行えます．さて、AYY^t^ = BY^t^ = ZZ^t^B Y^t^ = ZCY^t^ =ZUSV^t^Y^t^となります．ZU、YVは正規直交であり、それぞれAの左特異ベクトル、右ベクトルに対応します．またSはAの特異値が対角にならんだ対角行列です
+n行m列の行列Aに対し上位r個の特異値に関する特異値分解をすることを考えてみます．
+初めに各成分が平均0、分散1のGaussianからサンプルされた行r列のGaussian行列Oをサンプリングします．
+次に、Y = A^t^ Oを求めます．
+この時YとAの値域は一致します．
+そしてYの各列をGram-Schmidt法で正規直交化します．
+この時AYY^t^ = Aが成り立ちます．
+最後にn行r列のB = AYを求めます．
+このBはAを列方向に情報を圧縮していると考えられます．
+次に同様の方法で行方向に情報を圧縮します。
+まず、各成分が平均0，分散1のGaussianからサンプルされたr行r列の行列Pをサンプリングし、Z= BPを求めます．
+そしてZの各列を正規直交化します．
+最後に C = Z^t^ Bを求めます．
+Cはr行r列の行列であり、Bを各列方向に圧縮しています．
+B = Z Z^t^ Bが成り立ちます．
+最後にCに対してSVDを従来のSVDを求める方法で求め、C=USV^t^を得ます．
+Cは非常に小さい行列になっているので、この部分は高速に行えます．
+さて、AYY^t^ = BY^t^ = ZZ^t^B Y^t^ = ZCY^t^ =ZUSV^t^Y^t^となります．
+ZU、YVは正規直交であり、それぞれAの左特異ベクトル、右ベクトルに対応します．
+またSはAの特異値が対角にならんだ対角行列です
 
 == How to Use ==
 
-現在Ubuntu Linuxをサポートしています．（他の環境でも使えると思いますが確認していません）
+現在Linux Ubuntuをサポートしています．（他の環境でも使えると思いますが確認していません）
 
 まず、eigen3をインストールしてください．
 [http://eigen.tuxfamily.org/index.php?title=3.0-beta1 eigen3.0-beta1]
@@ -90,7 +108,7 @@ finished.
 +6.647099
 }}}
 
-次に疎行列の場合を試しましょう．この表現方法はlibsvmなどで使われている表現方法と同じで各行毎に、0では無い列番号とその値をコロン区切りで書く方法です．
+疎行列の場合にはlibsvdでつかわれている表現方法と同じように各行毎に、0では無い列番号とその値をコロン区切りで書く方法で行列を表します．
 {{{
 > 
 > cat news20.binary
@@ -184,7 +202,4 @@ rank = 10
   * redsvdはEigen3 [http://eigen.tuxfamily.org/index.php?title=3.0-beta1 Eigen 3.0-beta1]を利用しています．
   * redsvdは以下の論文の手法を元に実装されました．但し、オリジナルの方法では一方向のみにサンプリングを行っていますがredsvdでは行・列の両方向でサンプリングを行っています．
   # "Finding structure with randomness: Stochastic algorithms for constructing approximate matrix decompositions", N. Halko, P.G. Martinsson, J. Tropp, arXiv 0909.4061
-
-注意：上記のようにredsvdで使われているアルゴリズムと論文の手法は同じではないため、redsvdを使った結果を上記の論文手法として報告しないように注意してください
-
   * redsvdは[http://preferred.jp/index.html プリファードインフラストラクチャー]の20%プロジェクトで作られました．

@@ -1,20 +1,39 @@
+redsvd is a C++ library for solving several matrix decompositions including singular value decomposition (SVD), principal component analysis (PCA), and eigen value decomposition. 
+redsvd can handle very large matrix efficiently, and optimized for a truncated SVD of sparse matrices. 
+For example, redsvd can compute a truncated SVD with top 20 singular values for a 100K x 100K matrix with 1M nonzero entries in less than one second.
+
+The algorithm is based on the randomized algorithm for computing large-scale SVD. Although it uses randomized matrices, the results is very accurate with very high probability.
+
 == Inside of redsvd ==
 
 The code redsvd.hpp is the core part of redsvd and self explanatory.
 
-Let A \in R ^{n x m}^ be a matrix to be analyzed; n is the number of row and m is the number of columns, and r be the ranks of a truncated SVD (if you choose r = min(n, m), then this is the original SVD). First a random Gaussian matrix O \in R^{m x r}^  is sampled  and computes a sample matrix Y = A^t^ O. We then apply a Gram-Schmidt process to Y so that each column of Y is ortho-normalized. Finally we compute B = AY \in R^{n \times r}^.  Although the size of B is much smaller than that of A, the range of B equals to that of A^t^ with high probability. Therefore a matrix B has the compressed information of A with regard to the columns without loss of information. 
+Let A be a matrix to be analyzed with n rows and m columns, and r be the ranks of a truncated SVD (if you choose r = min(n, m), then this is the original SVD). 
 
-Next, we take another random Gaussian matrix P \in R^{r x r}^, and compute Z = BP, and  Z is also ortho-normalized. Then compute C = Z^t^ B \in R^{r x r}^. C has the compressed information of B with regard to the rows. Finally we compute SVD of C using the traditional method and obtain C = USV^t^ where U  and V are orthonormal matrices, and S is the diagonal matrix. 
+First a random Gaussian matrix O with m rows and r columns is sampled  and computes Y = A^t^ O. We then apply a Gram-Schmidt process to Y so that each column of Y is ortho-normalized. 
+Finally we compute B = AY with n rows and r columns.  
+Although the size of Y is much smaller than that of A, Y holds the informatin of A; AYY^t^t = A. Therefore a matrix B has the compressed information of A with regard to the columns without loss of information. 
 
-The matrix A is now decomposed as A = ZUSV^t^ Y^t^. ZU is the left singular vectors, YV is the right singular vector, and S is the diagonal matrix with singular values. 
+Next, we take another random Gaussian matrix P with r rows and columns, and compute Z = BP. 
+As in the previous case, the columns of Z are ortho-normalized. 
+Then compute C = Z^t^ B. 
+C has the compressed information of B with regard to the rows. ZZ^t^t B = B.
 
+Finally we compute SVD of small C using the traditional SVD solver and obtain C = USV^t^ where U  and V are orthonormal matrices, and S is the diagonal matrix whose entriesa re singular values. 
+
+Now A is decomposed as A = AYY^t^t = BY^t^t = ZZ^t^tBY^t^t = ZCY^t^t = ZUSV^t^Y^t^t.
+Both ZU and YV are othornormal, and ZU is the left singular vectors and  YV is the right singular vector. S is the diagonal matrix with singular values. 
 
 == How to Use ==
 
-Install eigen3
+Currently, redsvd is supported in Linux Ubuntu
+
+First, install eigen3
 [http://eigen.tuxfamily.org/index.php?title=3.0-beta1 eigen3.0-beta1]
 
-Download the latest tarball from [http://code.google.com/p/redsvd/downloads/list Downloads].
+Next, download the latest tarball of redsvd from [http://code.google.com/p/redsvd/downloads/list Downloads].
+
+Finally type the following commands.
 {{{
 > tar xvjf redsvd-x.x.x.tar.bz2
 > cd redsvd-x.x.x
@@ -23,7 +42,9 @@ Download the latest tarball from [http://code.google.com/p/redsvd/downloads/list
 sudo ./waf install
 }}}
 
-You can see the usage by calling redsvd without options.
+Now the program redsvd is installed.
+
+You can see the usage of redsvd by calling redsvd without options.
 {{{
 >redsvd
 usage: redsvd --input=string --output=string [options] ...
@@ -157,6 +178,8 @@ You can reproduce these result by
 
 * Latent Semantic Analyasis (SVD for doc-term matrix) of English Wikipedia
 
+The target rank is 10 
+
 || # doc || # word || # total words || time (msec) ||
 || 3560	 || 27106  || 172823  || 27          ||
 || 46857 || 147144 || 2418406 || 390         ||
@@ -169,9 +192,7 @@ You can reproduce these result by
 == Thanks ==
 
   * redsvd uses [http://eigen.tuxfamily.org/index.php?title=3.0-beta1 Eigen 3.0-beta1]
-  * redsvd uses the algorithm based on the randomized algorithm in the following paper. 
+  * redsvd uses the algorithm based on the randomized algorithm described in the following paper. 
+However, although the algorithm in redsvd samples both rows and columns, the original algorithm samples in one way (this would be because the performance analysis becomes complex).
   # "Finding structure with randomness: Stochastic algorithms for constructing approximate matrix decompositions", N. Halko, P.G. Martinsson, J. Tropp, arXiv 0909.4061
-
-Warning: The algorithm used in redsvd is not identical to the one in the above paper. Do not report that the results of redsvd are those of the algorithm in the above paper.
-
   * redsvd is developed in 20% project of [http://preferred.jp/index.html Preferred Infrastructure(Japanese)]
