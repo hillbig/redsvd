@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "redsvd.hpp"
+#include "../src/redsvd.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -96,6 +96,31 @@ TEST(redsvd, random){
   }
 
   ASSERT_NEAR(0.f, (A - U * S.asDiagonal() * V.transpose()).norm(), EPS);
+}
+
+TEST(redsvd, random_usv){
+  const int row  = 50;
+  const int col  = 30;
+  const int rank = 10;
+  MatrixXf U(row, rank);
+  MatrixXf V(col, rank);
+  REDSVD::sampleGaussianMat(U);
+  REDSVD::processGramSchmidt(U);
+  REDSVD::sampleGaussianMat(V);
+  REDSVD::processGramSchmidt(V);
+  VectorXf S(rank);
+  for (int i = 0; i < rank; ++i){
+    S(i) = rank-i;
+  }
+  MatrixXf A = U * S.asDiagonal() * V.transpose();
+  REDSVD::RedSVD svdOfA(A, rank);
+  
+
+  for (int i = 0; i < rank; ++i){
+    ASSERT_NEAR(1.f, fabs(U.col(i).dot(svdOfA.matrixU().col(i))), EPS);
+    ASSERT_NEAR(1.f, fabs(V.col(i).dot(svdOfA.matrixV().col(i))), EPS);
+    ASSERT_NEAR(0.f, S(i) - svdOfA.singularValues()(i), EPS);
+  }
 }
 
 

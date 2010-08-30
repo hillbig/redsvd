@@ -14,8 +14,4 @@ def build(bld):
       target       = 'redsvd',
       includes     = '.',
       uselib_local = 'redsvd')
-  bld(features     = 'cxx cprogram gtest',
-      source       = 'redsvdTest.cpp',
-      target       = 'redsvd_test',
-      uselib_local = 'redsvd')
   bld.install_files('${PREFIX}/include/redsvd', bld.path.ant_glob('*.hpp'))

@@ -7,8 +7,6 @@
 
 namespace REDSVD{
 
-typedef Eigen::SparseMatrix<float, Eigen::RowMajor> SMatrixXf;
-
 double getSec();
 
 void readMatrix(const std::string& fn, SMatrixXf& A);

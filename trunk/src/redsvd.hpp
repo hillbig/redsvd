@@ -1,13 +1,17 @@
 #ifndef REDSVD_HPP__
 #define REDSVD_HPP__
 
-#include <iostream>
+#include <vector>
 #include <eigen3/Eigen/Sparse>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Eigenvalues>
 
 namespace REDSVD {
 
+typedef Eigen::SparseMatrix<float, Eigen::RowMajor> SMatrixXf;
+typedef std::vector<std::pair<int, float> > fv_t;
+
+void convertFV2Mat(const std::vector<fv_t>& fvs, SMatrixXf& A);
 void sampleGaussianMat(Eigen::MatrixXf& x);
 void processGramSchmidt(Eigen::MatrixXf& mat);
 
