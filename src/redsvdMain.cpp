@@ -53,6 +53,14 @@ int main(int argc, char* argv[]){
   int    rank   = p.get<int>   ("rank");
   string method = p.get<string>("method");
   bool isInputSparse = false;
+
+  if (rank <= 0){
+    cerr << "rank=" << rank << endl
+	 << "rank should be positive integer" << endl;
+    return -1;
+  }
+
+
   if (format == "dense"){
     isInputSparse = false;
   } else if (format == "sparse"){

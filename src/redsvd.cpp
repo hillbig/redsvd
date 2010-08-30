@@ -52,4 +52,27 @@ void processGramSchmidt(MatrixXf& mat){
   }
 }
 
+void convertFV2Mat(const vector<fv_t>& fvs, REDSVD::SMatrixXf& A){
+  int maxID = 0;
+  size_t nonZeroNum = 0;
+  for (size_t i = 0; i < fvs.size(); ++i){
+    const fv_t& fv(fvs[i]);
+    for (size_t j = 0; j < fv.size(); ++j){
+      maxID = max(fv[j].first+1, maxID);
+    }
+    nonZeroNum += fv.size();
+  }
+  A.resize(fvs.size(), maxID);
+  A.reserve(nonZeroNum);
+  for (size_t i = 0; i < fvs.size(); ++i){
+    A.startVec(i);
+    const fv_t& fv(fvs[i]);
+    for (size_t j = 0; j < fv.size(); ++j){
+      A.insertBack(i, fv[j].first) = fv[j].second;
+    }
+  }
+  A.finalize();
+}
+
+
 }
