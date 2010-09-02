@@ -39,6 +39,12 @@ public:
   RedSVD(){}
 
   template <class Mat>
+  RedSVD(Mat& A){
+    int r = (A.rows() < A.cols()) ? A.rows() : A.cols();
+    run(A, r);
+  }
+
+  template <class Mat>
   RedSVD(Mat& A, const int rank){
     run(A, rank);
   }

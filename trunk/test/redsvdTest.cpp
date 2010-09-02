@@ -77,7 +77,6 @@ TEST(redsvd, artificial){
     }
   }
 
-  cout << U * S.asDiagonal() * V.transpose() << endl;
   ASSERT_NEAR(0.f, (A - U * S.asDiagonal() * V.transpose()).norm(), EPS);
 }
 
@@ -142,4 +141,17 @@ TEST(redsvd, random_usv){
   }
 }
 
+TEST(redsvd, sparse){
+  const int row = 10;
+  const int col = 10;
+  REDSVD::SMatrixXf A(row, col);
+  REDSVD::RedSVD svdOfA(A);
 
+  MatrixXf newA = svdOfA.matrixU() * svdOfA.singularValues().asDiagonal() * svdOfA.matrixV().transpose();
+  
+  for (int i = 0; i < row; ++i){
+    for (int j = 0; j < col; ++j){
+      ASSERT_FALSE(isnan(newA(i, j)));
+    }
+  }
+}
