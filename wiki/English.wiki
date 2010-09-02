@@ -110,7 +110,7 @@ finished.
 
 == Experimental Result ==
 
-See the detailed result [http://redsvd.googlecode.com/files/redsvd_result.pdf redsvd_result.pdf]
+See the detailed result [http://redsvd.googlecode.com/files/redsvd_result_100830.pdf redsvd_result.pdf]
 
 You can reproduce these result by
 {{{
