@@ -115,7 +115,7 @@ finished.
 
 == 実験結果 ==
 
-グラフ付きの詳細な実験結果については [http://redsvd.googlecode.com/files/redsvd_result.pdf redsvd_result.pdf]を参照してください．
+グラフ付きの詳細な実験結果については [http://redsvd.googlecode.com/files/redsvd_result_100830.pdf redsvd_result.pdf]を参照してください．
 
 これらの結果はインストールした後に、解凍したディレクトリにある
 {{{
