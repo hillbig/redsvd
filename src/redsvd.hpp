@@ -81,7 +81,7 @@ public:
     // Range(C) = Range(B)
     Eigen::MatrixXf C = Z.transpose() * B; 
     
-    Eigen::SVD<Eigen::MatrixXf> svdOfC(C);
+    Eigen::JacobiSVD<Eigen::MatrixXf> svdOfC(C, Eigen::ComputeThinU | Eigen::ComputeThinV);
     
     // C = USV^T
     // A = Z * U * S * V^T * Y^T()
