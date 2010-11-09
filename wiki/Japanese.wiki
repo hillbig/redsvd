@@ -12,8 +12,9 @@ redsvdはフリーソフトウェアです修正BSDライセンスに基づい�
 
 現在Linux Ubuntuをサポートしています．（他の環境でも使えると思いますが確認していません）
 
-まず、eigen3をインストールしてください．
-[http://eigen.tuxfamily.org/index.php?title=3.0-beta1 eigen3.0-beta1]
+redsvdではライルバリeigenを利用しています。
+eigen3をインストールしてください．[http://eigen.tuxfamily.org/index.php?title=3.0_beta eigen3.0-beta2]を利用しています．
+
 redsvdではeigen3の行列演算、及びオリジナルのSVDソルバーを利用しています．
 
 次にredsvdの最新のtarballを[http://code.google.com/p/redsvd/downloads/list Downloads]から入手してください．
@@ -187,7 +188,7 @@ A = AYY^t^ = BY^t^ = ZZ^t^BY^t^ = ZCY^t^ =ZUSV^t^Y^t^となります． ZU、YV�
 
 == 謝辞 ==
 
-  * redsvdはEigen3 [http://eigen.tuxfamily.org/index.php?title=3.0-beta1 Eigen 3.0-beta1]を利用しています．
+  * redsvdは [http://eigen.tuxfamily.org/index.php?title=Main_Page Eigen]を利用しています．
   * redsvdは以下の論文の手法を元に実装されました．但し、オリジナルの方法では一方向のみにサンプリングを行っていますがredsvdでは行・列の両方向でサンプリングを行っています．
   # "Finding structure with randomness: Stochastic algorithms for constructing approximate matrix decompositions", N. Halko, P.G. Martinsson, J. Tropp, arXiv 0909.4061
   * redsvdは[http://preferred.jp/index.html プリファードインフラストラクチャー]の20%プロジェクトで作られました．
