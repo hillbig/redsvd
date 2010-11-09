@@ -48,7 +48,7 @@ void runDenseSVD(int row, int col, int r){
 
   if (row <= SVD_MAX_SIZE && col <= SVD_MAX_SIZE){
     double start = getSec();
-    SVD<MatrixXf> SVDOfA(A);
+    JacobiSVD<MatrixXf> SVDOfA(A);
     cout << getSec() - start << "\t";
   }
 
