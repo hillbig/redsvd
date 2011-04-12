@@ -30,8 +30,8 @@ namespace {
 const float SVD_EPS = 0.0001f;
 
 void sampleTwoGaussian(float& f1, float& f2){
-  float v1 = (float)(rand()) / ((float)RAND_MAX+1);
-  float v2 = (float)(rand()) / ((float)RAND_MAX+1);
+  float v1 = (float)(rand() + 1.f) / ((float)RAND_MAX+2.f);
+  float v2 = (float)(rand() + 1.f) / ((float)RAND_MAX+2.f);
   float len = sqrt(-2.f * log(v1));
   f1 = len * cos(2.f * M_PI * v2);
   f2 = len * sin(2.f * M_PI * v2);
