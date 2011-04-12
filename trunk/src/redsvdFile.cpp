@@ -145,7 +145,7 @@ void writeMatrix(const string& fn, const REDSVD::RedSVD& A){
 
 void writeMatrix(const string& fn, const REDSVD::RedPCA& A){
   writeMatrix_(fn + ".pc",    A.principalComponents());
-  writeVector_(fn + ".score", A.scores());
+  writeMatrix_(fn + ".score", A.scores());
 }
 
 void writeMatrix(const string& fn, const REDSVD::RedSymEigen& A){

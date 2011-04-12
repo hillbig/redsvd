@@ -19,6 +19,7 @@
 
 #include <gtest/gtest.h>
 #include "../src/redsvd.hpp"
+#include "../src/redsvdFile.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -140,6 +141,22 @@ TEST(redsvd, random_usv){
     ASSERT_NEAR(0.f, S(i) - svdOfA.singularValues()(i), EPS);
   }
 }
+
+TEST(redsvd, file){
+  int rowN = 20;
+  int colN = 70;
+  MatrixXf A = MatrixXf::Random(rowN, colN);
+
+  int r = 20;
+  REDSVD::RedSVD redsvd(A, r);
+  REDSVD::RedPCA redpca(A, r);
+  MatrixXf U = redsvd.matrixU();
+  VectorXf S = redsvd.singularValues();
+  MatrixXf V = redsvd.matrixV();
+  REDSVD::writeMatrix("test", redsvd);
+  REDSVD::writeMatrix("test", redpca);
+}
+
 
 TEST(redsvd, sparse){
   const int row = 10;
