@@ -13,6 +13,6 @@ def build(bld):
       uselib_local = 'redsvd')
 
   bld(features     = 'cxx cprogram gtest',
-      source       = 'redsvdTest.cpp',
+      source       = 'redsvdTest.cpp ../src/redsvdFile.cpp',
       target       = 'redsvd_test',
       uselib_local = 'redsvd')

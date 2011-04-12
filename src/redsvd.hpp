@@ -20,6 +20,8 @@
 #ifndef REDSVD_HPP__
 #define REDSVD_HPP__
 
+#define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
+
 #include <vector>
 #include <eigen3/Eigen/Sparse>
 #include <eigen3/Eigen/Dense>
