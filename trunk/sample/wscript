@@ -5,10 +5,3 @@ def build(bld):
       install_path = None,
       includes     = '.',
       uselib_local = 'redsvd')
-  bld(features     = 'cxx cprogram',
-      source       = 'mclinearMain.cpp mclinear.cpp',
-      target       = 'mclinear',
-      install_path = None,
-      includes     = '.',
-      uselib_local = 'redsvd')
-
