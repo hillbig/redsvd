@@ -101,7 +101,7 @@ void LSA::processFileList(const char* fn, const int r){
 
 
   SMatrixXf A;
-  convertFV2Mat(fvs, A);
+  Util::convertFV2Mat(fvs, A);
   cout << "docN:" << A.rows() << " wordN:" << A.cols() << " wordTotalN:" << A.nonZeros() << endl;
   cout << "SVD ..." << flush;
   start = getSec();

@@ -31,8 +31,8 @@ void denseTest(int row, int col, int actualRank, int estimateRank){
   cout << "dense " << row << "\t" << col << "\t" << actualRank << "\t" << estimateRank << endl;
   MatrixXf U = MatrixXf::Random(row, actualRank);
   MatrixXf V=  MatrixXf::Random(col, actualRank);
-  processGramSchmidt(U);
-  processGramSchmidt(V);
+  Util::processGramSchmidt(U);
+  Util::processGramSchmidt(V);
   VectorXf S(actualRank);
   for (int i = 0; i < actualRank; ++i){
     S(i) = pow(0.9f, i);

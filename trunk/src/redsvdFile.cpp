@@ -21,8 +21,10 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <sys/time.h>
+
 #include "redsvdFile.hpp"
+#include "redsvd.hpp"
+#include "redsvdIncr.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -63,7 +65,6 @@ void writeVector_(const string& fn, const VectorXf& V){
 }
 
 void readLine(const string& line,  
-	      const size_t lineN, 
 	      fv_t& fv){
   istringstream is(line);
 
@@ -80,11 +81,6 @@ void readLine(const string& line,
 }
 
 
-double getSec(){
-  timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_sec + (double)tv.tv_usec*1e-6;
-}
 
 void readMatrix(const std::string& fn, SMatrixXf& A){
   vector<fv_t> fvs;
@@ -93,14 +89,13 @@ void readMatrix(const std::string& fn, SMatrixXf& A){
     throw string("failed to open") + fn;
   }
 
-  size_t lineN = 0;
   for (string line; getline(ifs, line); ){
     fv_t fv;
-    readLine(line, lineN++, fv);
-    if (fv.size() == 0) continue;
+    readLine(line, fv);
+    //if (fv.size() == 0) continue;
     fvs.push_back(fv);
   }
-  convertFV2Mat(fvs, A);
+  Util::convertFV2Mat(fvs, A);
 }
 
 void readMatrix(const std::string& fn, MatrixXf& A){
@@ -142,6 +137,13 @@ void writeMatrix(const string& fn, const REDSVD::RedSVD& A){
   writeVector_(fn + ".S", A.singularValues());
   writeMatrix_(fn + ".V", A.matrixV());
 }
+
+void writeMatrix(const string& fn, const REDSVD::RedSVDIncr& A){
+  writeMatrix_(fn + ".U", A.matrixU());
+  writeVector_(fn + ".S", A.singularValues());
+  writeMatrix_(fn + ".V", A.matrixV());
+}
+
 
 void writeMatrix(const string& fn, const REDSVD::RedPCA& A){
   writeMatrix_(fn + ".pc",    A.principalComponents());

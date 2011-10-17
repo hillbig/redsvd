@@ -22,11 +22,15 @@
 
 #include <string>
 #include <iostream>
-#include "redsvd.hpp"
+#include <fstream>
+#include "util.hpp"
 
 namespace REDSVD{
 
-double getSec();
+class RedSVD;
+class RedPCA;
+class RedSymEigen;
+class RedSVDIncr;
 
 void readMatrix(const std::string& fn, SMatrixXf& A);
 void readMatrix(const std::string& fn, Eigen::MatrixXf& A);
@@ -34,30 +38,29 @@ void readMatrix(const std::string& fn, Eigen::MatrixXf& A);
 void writeMatrix(const std::string& fn, const RedSVD& A);
 void writeMatrix(const std::string& fn, const RedPCA& A);
 void writeMatrix(const std::string& fn, const RedSymEigen& A);
+void writeMatrix(const std::string& fn, const RedSVDIncr& A);
 
 template<class Mat, class RetMat>
 void fileProcess(const std::string& inputFileName,
 		 const std::string& outputFileName,
 		 int rank){
-  double startSec = getSec();
+  double startSec = Util::getSec();
   std::cout << "read matrix from " << inputFileName << " ... " << std::flush;
   Mat A;
   readMatrix(inputFileName.c_str(), A);
-  double endSec = getSec();
-  std::cout << endSec - startSec << " sec." <<std:: endl;
+  std::cout << Util::getSec() - startSec << " sec." <<std:: endl;
   std::cout << "rows:\t" << A.rows() << std::endl
 	    << "cols:\t" << A.cols() << std::endl
 	    << "rank:\t" << rank  << std::endl;
 
   std::cout << "compute ... " << std::flush;
-  startSec = getSec();
+  startSec = Util::getSec();
   RetMat retMat(A, rank);
-  endSec   = getSec();
-  std::cout << endSec - startSec << " sec." << std::endl;
+  std::cout << Util::getSec() - startSec << " sec." << std::endl;
   
-  startSec = getSec();
+  startSec = Util::getSec();
   writeMatrix(outputFileName, retMat);
-  std::cout << getSec() - startSec << " sec." << std::endl
+  std::cout << Util::getSec() - startSec << " sec." << std::endl
 	    << "finished." << std::endl;
 }
 

@@ -18,18 +18,24 @@
  */
 
 #include <iostream>
-#include "redsvd.hpp"
+#include <sys/time.h>
+
+#include "util.hpp"
 
 using namespace std;
 using namespace Eigen;
 
 namespace REDSVD {
 
-namespace {
-
 const float SVD_EPS = 0.0001f;
 
-void sampleTwoGaussian(float& f1, float& f2){
+double Util::getSec(){
+  timeval tv;
+  gettimeofday(&tv, NULL);
+  return tv.tv_sec + (double)tv.tv_usec*1e-6;
+}
+
+void Util::sampleTwoGaussian(float& f1, float& f2){
   float v1 = (float)(rand() + 1.f) / ((float)RAND_MAX+2.f);
   float v2 = (float)(rand() + 1.f) / ((float)RAND_MAX+2.f);
   float len = sqrt(-2.f * log(v1));
@@ -37,9 +43,7 @@ void sampleTwoGaussian(float& f1, float& f2){
   f2 = len * sin(2.f * M_PI * v2);
 }
 
-}
-
-void sampleGaussianMat(MatrixXf& mat){
+void Util::sampleGaussianMat(MatrixXf& mat){
   for (int i = 0; i < mat.rows(); ++i){
     int j = 0;
     for ( ; j+1 < mat.cols(); j += 2){
@@ -57,7 +61,7 @@ void sampleGaussianMat(MatrixXf& mat){
 } 
 
 
-void processGramSchmidt(MatrixXf& mat){
+void Util::processGramSchmidt(MatrixXf& mat){
   for (int i = 0; i < mat.cols(); ++i){
     for (int j = 0; j < i; ++j){
       float r = mat.col(i).dot(mat.col(j));
@@ -74,7 +78,7 @@ void processGramSchmidt(MatrixXf& mat){
   }
 }
 
-void convertFV2Mat(const vector<fv_t>& fvs, REDSVD::SMatrixXf& A){
+void Util::convertFV2Mat(const vector<fv_t>& fvs, REDSVD::SMatrixXf& A){
   int maxID = 0;
   size_t nonZeroNum = 0;
   for (size_t i = 0; i < fvs.size(); ++i){

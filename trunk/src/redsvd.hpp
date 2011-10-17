@@ -26,15 +26,9 @@
 #include <eigen3/Eigen/Sparse>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Eigenvalues>
+#include "util.hpp"
 
 namespace REDSVD {
-
-typedef Eigen::SparseMatrix<float, Eigen::RowMajor> SMatrixXf;
-typedef std::vector<std::pair<int, float> > fv_t;
-
-void convertFV2Mat(const std::vector<fv_t>& fvs, SMatrixXf& A);
-void sampleGaussianMat(Eigen::MatrixXf& x);
-void processGramSchmidt(Eigen::MatrixXf& mat);
 
 class RedSVD {
 public:
@@ -59,26 +53,26 @@ public:
     
     // Gaussian Random Matrix for A^T
     Eigen::MatrixXf O(A.rows(), r);
-    sampleGaussianMat(O);
+    Util::sampleGaussianMat(O);
     
     // Compute Sample Matrix of A^T
     Eigen::MatrixXf Y = A.transpose() * O;
     
     // Orthonormalize Y
-    processGramSchmidt(Y);
+    Util::processGramSchmidt(Y);
 
     // Range(B) = Range(A^T)
     Eigen::MatrixXf B = A * Y;
     
     // Gaussian Random Matrix
     Eigen::MatrixXf P(B.cols(), r);
-    sampleGaussianMat(P);
+    Util::sampleGaussianMat(P);
     
     // Compute Sample Matrix of B
     Eigen::MatrixXf Z = B * P;
     
     // Orthonormalize Z
-    processGramSchmidt(Z);
+    Util::processGramSchmidt(Z);
     
     // Range(C) = Range(B)
     Eigen::MatrixXf C = Z.transpose() * B; 
@@ -127,13 +121,13 @@ public:
     
     // Gaussian Random Matrix
     Eigen::MatrixXf O(A.rows(), r);
-    sampleGaussianMat(O);
+    Util::sampleGaussianMat(O);
     
     // Compute Sample Matrix of A
     Eigen::MatrixXf Y = A.transpose() * O;
     
     // Orthonormalize Y
-    processGramSchmidt(Y);
+    Util::processGramSchmidt(Y);
 
     Eigen::MatrixXf B = Y.transpose() * A * Y;
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXf> eigenOfB(B);
