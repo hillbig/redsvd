@@ -1,11 +1,11 @@
 def build(bld):
   bld(features     ='cxx cshlib',
-      source       = 'redsvd.cpp',
+      source       = 'util.cpp',
       name         = 'redsvd',
       target       = 'redsvd',
       includes     = '.')
   bld(features     ='cxx cstaticlib',
-      source       = 'redsvd.cpp',
+      source       = 'util.cpp',
       name         = 'redsvd',
       target       = 'redsvd',
       includes     = '.')
@@ -14,4 +14,10 @@ def build(bld):
       target       = 'redsvd',
       includes     = '.',
       uselib_local = 'redsvd')
+  bld(features     ='cxx cprogram',
+      source       = 'redsvdMainIncr.cpp redsvdFile.cpp',
+      target       = 'redsvd_incr',
+      includes     = '.',
+      uselib_local = 'redsvd')
+
   bld.install_files('${PREFIX}/include/redsvd', bld.path.ant_glob('*.hpp'))

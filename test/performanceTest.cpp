@@ -90,55 +90,37 @@ void denseMatrixTest(){
   cout << "row\tcol\tredSVD\tSVD" << endl;
 
   cout << "row fixed:" << endl;
-  int r = 10;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= MAX_SIZE; i *= 10){
-    runDenseSVD(i, 500, r);
-  }
-  r = 100;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= MAX_SIZE; i *= 10){
-    runDenseSVD(i, 500, r);
-  }
-  r = 1000;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= MAX_SIZE; i *= 10){
-    runDenseSVD(i, 500, r);
+  vector<int> ranks;
+  ranks.push_back(10);
+  ranks.push_back(100);
+  ranks.push_back(1000);
+  
+  for (size_t ir = 0; ir < ranks.size(); ++ir){
+    int r = ranks[ir];
+    cout << "rank:\t" << r << endl;
+    for (int i = 100; i <= MAX_SIZE; i *= 10){
+      runDenseSVD(i, 500, r);
+    }
   }
 
   cout << "col fixed:" << endl;
-  r = 10;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= MAX_SIZE; i *= 10){
-    runDenseSVD(500, i, r);
-  }
-  r = 100;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= MAX_SIZE; i *= 10){
-    runDenseSVD(500, i, r);
-  }
-  r = 1000;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= MAX_SIZE; i *= 10){
-    runDenseSVD(500, i, r);
+  for (size_t ir = 0; ir < ranks.size(); ++ir){
+    int r = ranks[ir];
+    cout << "rank:\t" << r << endl;
+    for (int i = 100; i <= MAX_SIZE; i *= 10){
+      runDenseSVD(500, i, r);
+    }
   }
 
   cout << "square:" << endl;
-  r = 10;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= SQUARE_MAX_SIZE; i *= 10){
-    runDenseSVD(i, i, r);
+  for (size_t ir = 0; ir < ranks.size(); ++ir){
+    int r = ranks[ir];
+    cout << "rank:\t" << r << endl;
+    for (int i = 100; i <= MAX_SIZE; i *= 10){
+      runDenseSVD(i, i, r);
+    }
   }
-  r = 100;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= SQUARE_MAX_SIZE; i *= 10){
-    runDenseSVD(i, i, r);
-  }
-  r = 1000;
-  cout << "rank:\t" << r << endl;
-  for (int i = 100; i <= SQUARE_MAX_SIZE; i *= 10){
-    runDenseSVD(i, i, r);
-  }
+
 
   cout << "full rank:" << endl;
   for (int i = 100; i <= SQUARE_MAX_SIZE; i *= 10){

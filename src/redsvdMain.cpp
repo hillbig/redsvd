@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "cmdline.h"
+#include "redsvd.hpp"
 #include "redsvdFile.hpp"
 
 using namespace std;
