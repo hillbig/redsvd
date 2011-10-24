@@ -12,7 +12,7 @@ redsvdはフリーソフトウェアです修正BSDライセンスに基づい�
 
 現在Linux Ubuntuをサポートしています．（他の環境でも使えると思いますが確認していません）
 
-redsvdではライルバリeigenを利用しています。
+redsvdではライブラリeigenを利用しています。
 eigen3をインストールしてください．[http://eigen.tuxfamily.org/index.php?title=3.0_beta eigen3.0-beta2]を利用しています．
 
 redsvdではeigen3の行列演算、及びオリジナルのSVDソルバーを利用しています．
