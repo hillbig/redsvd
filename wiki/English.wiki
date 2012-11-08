@@ -25,6 +25,16 @@ sudo ./waf install
 
 Now the program redsvd is installed.
 
+If you want to install redsvd in local environment, type the following commands.
+{{{
+> tar xvjf redsvd-x.x.x.tar.bz2
+> cd redsvd-x.x.x
+> ./waf configure --prefix="/your/local/path" 
+>./waf 
+./waf install
+}}}
+
+
 You can see the usage of redsvd by calling redsvd without options.
 {{{
 >redsvd
