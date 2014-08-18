@@ -4,6 +4,8 @@ For example, redsvd can compute a truncated SVD with top 20 singular values for 
 
 The algorithm is based on the randomized algorithm for computing large-scale SVD. Although it uses randomized matrices, the results is very accurate with very high probability.
 
+  * Nicolas Tessore made a header only version of redsvd, which is useful for manys [https://github.com/ntessore/redsvd-h]
+
 
 == How to Use ==
 
